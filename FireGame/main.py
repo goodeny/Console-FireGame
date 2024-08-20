@@ -3,6 +3,7 @@ import time
 import os
 import keyboard
 import threading
+import random
 
 pos = 0
 e_pos = 4
@@ -37,28 +38,26 @@ def move_left():
     except:
         pass
 
-index = None
+index = 0
 for num, i in enumerate(map[0]):
     if i == 1:
         index = num
 
-
-
 def shoot():
-    index = None
+    index = 0
     for num, i in enumerate(map[0]):
         if i == 1:
             index = num
     for i in range(1, len(map)):
-        map[i][index] = '*'
-        if i != 1:
-            map[i-1][index] = 0
+        map[i][index] = "*"
         try:
-            if map[i+1][index] != 0:
-                print(i+1)
-                map[i+1][index] = 0
-                map[i][index] = 0
-                break
+            if i != 1:
+                map[i-1][index] = 0
+                if map[i+1][index] != 0:
+                    print(i+1)
+                    map[i+1][index] = 0
+                    map[i][index] = 0
+                    break
         except:
             pass
         os.system('cls')
@@ -69,6 +68,22 @@ def clear_map():
     for num, i in enumerate(map[4]):
         if i == '*':
             map[4][num] = 0
+
+def enemy_animation():
+    r = random.randint(0,4)
+    lenght = len(map)
+    for num, i in enumerate(map):
+        if num >= 1:
+            for x in range(lenght):
+                lenght -= 1
+                map[lenght][r] = 2
+                try:
+                    map[lenght+1][r] = 0
+                    #os.system('cls')
+                    #show_map()
+                    time.sleep(0.5)
+                except:
+                    pass
 
 game_start()
 
@@ -92,4 +107,5 @@ def game_update():
     clear_map()
 
 while True:
+    threading.Thread(target=enemy_animation).start()
     game_update()
